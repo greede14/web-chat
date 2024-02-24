@@ -3,7 +3,7 @@ const socket = io.connect('http://localhost:3000');
 
 const message = document.getElementById('message-input');
 const sendMsg = document.getElementById('send-message');
-const msgSound = document.getElementById('notification-sound');
+// const msgSound = document.getElementById('notification-sound');
 const user = document.getElementById('username-input');
 const sendUser = document.getElementById('send-username');
 const displayMsg = document.getElementById('display-message');
@@ -19,7 +19,7 @@ const login = document.getElementById('login-page');
 
 sendUser.addEventListener('click', () => {
   if (user.value === null || user.value.trim().length === 0) {
-    userErr.innerHTML = '🚨 Name is required!';
+    userErr.innerHTML = 'Input your name';
     return;
   }
 
@@ -52,7 +52,7 @@ message.addEventListener('keypress', () => {
 socket.on('user-connected', (username) => {
   displayMsg.innerHTML += `<p><strong>${username}</strong> has connected!</p>`;
   chatWindow.scrollTop = chatWindow.scrollHeight;
-  msgSound.play();
+  // msgSound.play();
 });
 
 socket.on('broadcast', (number) => {
@@ -63,7 +63,7 @@ socket.on('new-message', (data) => {
   typingLabel.innerHTML = '';
   displayMsg.innerHTML += `<p><strong>${data.username}</strong><em> at ${new Date().getHours()}:${new Date().getMinutes()}</em> : ${data.message}</p>`;
   chatWindow.scrollTop = chatWindow.scrollHeight;
-  msgSound.play();
+  // msgSound.play();
 });
 
 socket.on('is-typing', (username) => {
@@ -78,6 +78,6 @@ socket.on('user-disconnected', (username) => {
   } else {
     displayMsg.innerHTML += `<p><strong>${username}</strong> has disconnected!</p>`;
     chatWindow.scrollTop = chatWindow.scrollHeight;
-    msgSound.play();
+    // msgSound.play();
   }
 });

@@ -35,15 +35,15 @@ document.querySelector('#theme-button').addEventListener('click', () => {
 });
 
 
-const audioPlayer = document.getElementById('notification-sound');
-const switcher = document.getElementById('sound-control');
-switcher.addEventListener('click', () => {
-  if (switcher.checked === false) {
-    audioPlayer.muted = true;
-  } else {
-    audioPlayer.muted = false;
-  }
-});
+// const audioPlayer = document.getElementById('notification-sound');
+// const switcher = document.getElementById('sound-control');
+// switcher.addEventListener('click', () => {
+//   if (switcher.checked === false) {
+//     audioPlayer.muted = true;
+//   } else {
+//     audioPlayer.muted = false;
+//   }
+// });
 
 
 function sendOnEnter(event) {
