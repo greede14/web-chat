@@ -1,9 +1,7 @@
-// eslint-disable-next-line no-undef
-const socket = io.connect('http://localhost:3000');
 
-const message = document.getElementById('message-input');
+const deleteTask = document.getElementById('delete')
+const task = document.getElementById('message-input');
 const sendMsg = document.getElementById('send-message');
-// const msgSound = document.getElementById('notification-sound');
 const user = document.getElementById('username-input');
 const sendUser = document.getElementById('send-username');
 const displayMsg = document.getElementById('display-message');
@@ -27,57 +25,91 @@ sendUser.addEventListener('click', () => {
   login.style.display = 'none';
   chat.style.display = 'block';
   join.innerHTML = '<p>You have joined the chat!<p>';
-  socket.emit('new-user', user.value);
+});
+
+deleteTask.addEventListener('click', () => {
+  fetch("https://communal-jaybird-69.hasura.app/api/rest/delete-todos", {
+      headers: {
+        "x-hasura-access-key":
+          "Lh5FtTEIzpGcC4nWQudYRDomc8bn5mYcIAsIQMh5jkLboRHbcWMlfpvohrOEuWFn",
+      },
+      method: "DELETE"
+    })
+      .then((res) => res.json())
+      .then(() => {
+       console.log("sdsdasdasd");
+       const chatWindow = document.getElementById("chat-window");
+       chatWindow.innerHTML ='';
+    });
 });
 
 sendMsg.addEventListener('click', () => {
-  if (message.value === null || message.value.trim().length === 0) {
+  if (task.value === null || task.value.trim().length === 0) {
     msgErr.innerHTML = '🚨 Message is required!';
     return;
   }
 
-  socket.emit('new-message', {
-    message: message.value,
+  const newTask = {
     username: user.value,
-  });
-  message.value = '';
-  msgErr.innerHTML = '';
-});
-
-message.addEventListener('keypress', () => {
-  socket.emit('is-typing', user.value);
-});
-
-
-socket.on('user-connected', (username) => {
-  displayMsg.innerHTML += `<p><strong>${username}</strong> has connected!</p>`;
-  chatWindow.scrollTop = chatWindow.scrollHeight;
-  // msgSound.play();
-});
-
-socket.on('broadcast', (number) => {
-  usersCounter.innerHTML = number;
-});
-
-socket.on('new-message', (data) => {
-  typingLabel.innerHTML = '';
-  displayMsg.innerHTML += `<p><strong>${data.username}</strong><em> at ${new Date().getHours()}:${new Date().getMinutes()}</em> : ${data.message}</p>`;
-  chatWindow.scrollTop = chatWindow.scrollHeight;
-  // msgSound.play();
-});
-
-socket.on('is-typing', (username) => {
-  typingLabel.innerHTML = `<p>${username} is typing...</p>`;
-  chatWindow.scrollTop = chatWindow.scrollHeight;
-});
-
-socket.on('user-disconnected', (username) => {
-  if (username == null) {
-    displayMsg.innerHTML += '<p>Unlogged user has disconnected!</p>';
-    chatWindow.scrollTop = chatWindow.scrollHeight;
-  } else {
-    displayMsg.innerHTML += `<p><strong>${username}</strong> has disconnected!</p>`;
-    chatWindow.scrollTop = chatWindow.scrollHeight;
-    // msgSound.play();
+    task: task.value,
   }
+
+  fetch("https://communal-jaybird-69.hasura.app/api/rest/createtodos", {
+      headers: {
+        "x-hasura-access-key":
+          "Lh5FtTEIzpGcC4nWQudYRDomc8bn5mYcIAsIQMh5jkLboRHbcWMlfpvohrOEuWFn",
+      },
+      method: "POST",
+      body: JSON.stringify(newTask),
+    })
+      .then((res) => res.json())
+      .then(() => {
+        const chatWindow = document.getElementById("chat-window");
+        const newMessageElement = document.createElement("p");
+        newMessageElement.innerHTML = `<strong>${user.value}</strong> at ${new Date().getHours()}:${new Date().getMinutes()} : ${task.value}`;
+        chatWindow.appendChild(newMessageElement);
+      
+        chatWindow.scrollTop = chatWindow.scrollHeight;
+      
+        task.value = '';
+        msgErr.innerHTML = '';
+    });
+});
+
+task.addEventListener('keypress', () => {
+});
+
+const tasksToRender = [];
+const renderTasksAndUpdateChat = (tasks) => {
+  const chatWindow = document.getElementById("chat-window");
+
+  chatWindow.innerHTML = "";
+
+  tasks.reverse();
+
+  tasks.forEach((task) => {
+    const taskElement = document.createElement("p");
+    taskElement.innerHTML = `<strong>${task.username}</strong> at ${new Date(task.created_at).getHours()}:${new Date(task.created_at).getMinutes()} : ${task.task}`;
+    chatWindow.appendChild(taskElement);
+  });
+
+
+  chatWindow.scrollTop = chatWindow.scrollHeight;
+};
+
+window.addEventListener("load", () => {
+  fetch("https://communal-jaybird-69.hasura.app/api/rest/todos_test", {
+    headers: {
+      "x-hasura-access-key":
+        "Lh5FtTEIzpGcC4nWQudYRDomc8bn5mYcIAsIQMh5jkLboRHbcWMlfpvohrOEuWFn",
+    },
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      console.log(data);
+      renderTasksAndUpdateChat(data.todos);
+    })
+    .catch((error) => {
+      console.error("Error fetching data:", error);
+    });
 });

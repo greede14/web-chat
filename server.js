@@ -1,5 +1,4 @@
-/* eslint-disable no-console */
-/* eslint-disable import/no-unresolved */
+
 const path = require('path');
 const express = require('express');
 
@@ -16,7 +15,6 @@ let usersNum = 0;
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-// eslint-disable-next-line no-shadow
 io.on('connection', (socket) => {
   console.log(`The socket is connected! Socket id: ${socket.id}`);
   usersNum += 1;

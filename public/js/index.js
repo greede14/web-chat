@@ -1,5 +1,3 @@
-/* eslint-disable no-undef */
-/* eslint-disable no-unused-vars */
 document.getElementById('chat').style.display = 'none';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -33,27 +31,3 @@ window.addEventListener('DOMContentLoaded', () => {
 document.querySelector('#theme-button').addEventListener('click', () => {
   document.body.classList.toggle('dark');
 });
-
-
-// const audioPlayer = document.getElementById('notification-sound');
-// const switcher = document.getElementById('sound-control');
-// switcher.addEventListener('click', () => {
-//   if (switcher.checked === false) {
-//     audioPlayer.muted = true;
-//   } else {
-//     audioPlayer.muted = false;
-//   }
-// });
-
-
-function sendOnEnter(event) {
-  if (event.key === 'Enter') {
-    document.getElementById('send-message').click();
-  }
-}
-
-function loginOnEnter(event) {
-  if (event.key === 'Enter') {
-    document.getElementById('send-username').click();
-  }
-}
